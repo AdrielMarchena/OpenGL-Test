@@ -21,6 +21,9 @@ namespace test {
 		float m_Color[4];
 		float m_Angle;
 		float m_Rotation;
+		float m_RotateTime;
+		bool m_AutoRot;
+		bool m_EnableDepthTest;
 
 		Shader m_Shader;
 		VertexArray m_VertexArray;

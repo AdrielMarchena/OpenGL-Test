@@ -1,5 +1,6 @@
 #include "TestCube.h"
 #include "imgui/imgui.h"
+#include "GLFW/glfw3.h"
 
 /*I know this is dumb, sorry :D*/
 #define VERTICES {\
@@ -51,13 +52,16 @@ namespace test{
 		 m_Color{ 0.0f,1.0f,1.0f,1.0f },
 		m_Angle(20.0f),
 		m_Rotation(0.0f),
+		m_RotateTime(1.0f),
+		m_AutoRot(false),
+		m_EnableDepthTest(true),
 		m_Shader("res/shader/cube.shader"),
 		m_VertexArray(),
 		m_VertexBuffer(m_Position,5 * 36 * sizeof(float)),
 		m_Layout(),
 		m_Texture("res/textures/texture.png")
+		//End Init list
 	{
-
 		m_Shader.Bind();
 		m_Layout.Push<float>(3);
 		m_Layout.Push<float>(2);
@@ -74,7 +78,17 @@ namespace test{
 
 	void TestCube::OnUpdate(float deltaTime)
 	{
+		static float rot = 1.0f;
 
+		if (!m_EnableDepthTest)
+		{
+			GLCall(glDisable(GL_DEPTH_TEST));
+		}
+		else
+		{
+			GLCall(glEnable(GL_DEPTH_TEST));
+		}
+			
 		glm::mat4 view = glm::mat4(1.0f);
 		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 		m_Shader.SetUniformMat4f("view", view);
@@ -85,15 +99,28 @@ namespace test{
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::rotate(model, glm::radians(m_Angle), glm::vec3(1.0f, 0.3f, 0.5f));
-		model = glm::rotate(model, m_Rotation * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+		if (!m_AutoRot)
+		{
+			model = glm::rotate(model, m_Rotation * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+		}
+		else
+		{
+			model = glm::rotate(model, ((float)glfwGetTime() * m_RotateTime) * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+		}
 		m_Shader.SetUniformMat4f("model", model);
 	}
 
 	void TestCube::OnRender()
 	{
-
-		GLCall(glClearColor(m_Color[0], m_Color[1], m_Color[2], m_Color[3]))
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		if (!m_EnableDepthTest)
+		{
+			GLCall(glClear(GL_COLOR_BUFFER_BIT));
+		}
+		else
+		{
+			GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		}
+		
 
 		m_VertexArray.Bind();
 		m_Shader.Bind();
@@ -102,8 +129,14 @@ namespace test{
 
 	void TestCube::OnImGuiRender()
 	{
-		ImGui::ColorEdit4("Cube Color", m_Color);
-		ImGui::SliderFloat("Rotation", &m_Rotation, 1.0f, 100.0f);
+		if(!m_AutoRot)
+			ImGui::SliderFloat("Rotation", &m_Rotation, 0.0f, 20.0f);
+		else
+			ImGui::SliderFloat("Rotation Time", &m_RotateTime, 0.02f, 3.0f);
+		ImGui::SliderFloat("Angle", &m_Angle, 1.0f, 100.0f);
+		ImGui::Checkbox("Auto Rotate", &m_AutoRot);
+		ImGui::Checkbox("Depth Test", &m_EnableDepthTest);
+
 	}
 
 }
