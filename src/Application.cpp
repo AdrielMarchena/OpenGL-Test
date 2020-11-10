@@ -22,9 +22,7 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-#include "tests/TestClearColor.h"
-#include "tests/TestTriangle.h"
-#include "tests/TestCube.h"
+#include "tests/Tester.h"
 
 int main(void)
 {
@@ -73,7 +71,7 @@ int main(void)
 
         ImGui_ImplOpenGL3_Init((char *)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
-        test::TestCube test;
+        test::Tester test;
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -82,12 +80,12 @@ int main(void)
             renderer.Clear();
 
             test.OnUpdate(0.0f);
-            test.OnRender();
 
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
+            test.OnRender();
             test.OnImGuiRender();
             
             ImGui::Render();
