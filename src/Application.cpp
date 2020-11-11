@@ -34,6 +34,8 @@ input::Keyboard KeyBoard_Global;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     KeyBoard_Global.handleInputs(window, key, scancode, action, mods);
+    /*if(key == GLFW_KEY_F11)
+        glfwMaximizeWindow(window);*/
 }
 
 int main(void)
@@ -47,7 +49,7 @@ int main(void)
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
     /* Create a windowed mode window and its OpenGL context */
     window = glfwCreateWindow(960, 540, "Test OpenGL", NULL, NULL);
