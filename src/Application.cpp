@@ -23,6 +23,18 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "tests/Tester.h"
+#include "input/Keyboard.h"
+
+std::vector<std::function<void()>> input::Keyboard::clickedFunction = { []() {} };
+std::vector<bool> input::Keyboard::pressedKeys = { 0 };
+std::vector<bool> input::Keyboard::clickedKeys = { 0 };
+
+input::Keyboard KeyBoard_Global;
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    KeyBoard_Global.handleInputs(window, key, scancode, action, mods);
+}
 
 int main(void)
 {
@@ -57,8 +69,11 @@ int main(void)
     //An additional scope, to delete some things before call glfwTerminate();
     {
         //GLCall(glEnable(GL_DEPTH_TEST));
-        //GLCall(glEnable(GL_BLEND));
-        //GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+        GLCall(glEnable(GL_BLEND));
+        GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+
+        //Callback func to keyboard events
+        glfwSetKeyCallback(window, key_callback);
 
         Renderer renderer;
 

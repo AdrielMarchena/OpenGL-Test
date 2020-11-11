@@ -2,8 +2,9 @@
 #include "imgui/imgui.h"
 #include "GLFW/glfw3.h"
 
+
 /*I know this is dumb, sorry :D*/
-#define VERTICES {\
+#define VERTICES_CUBE \
 -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,\
 0.5f, -0.5f, -0.5f, 1.0f, 0.0f,\
 0.5f, 0.5f, -0.5f, 1.0f, 1.0f,\
@@ -44,11 +45,11 @@
 0.5f, 0.5f, 0.5f, 1.0f, 0.0f,\
 0.5f, 0.5f, 0.5f, 1.0f, 0.0f,\
 -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,\
--0.5f, 0.5f, -0.5f, 0.0f, 1.0f}
+-0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 
 namespace test{
 	TestCube::TestCube()
-		:m_Position VERTICES,
+		:m_Position{ VERTICES_CUBE },
 		 m_Color{ 0.0f,1.0f,1.0f,1.0f },
 		m_Angle(20.0f),
 		m_Rotation(0.0f),
@@ -62,6 +63,7 @@ namespace test{
 		m_Texture("res/textures/texture.png")
 		//End Init list
 	{
+
 		m_Shader.Bind();
 		m_Layout.Push<float>(3);
 		m_Layout.Push<float>(2);
@@ -78,7 +80,12 @@ namespace test{
 
 	void TestCube::OnUpdate(float deltaTime)
 	{
+		using namespace input;
 		static float rot = 1.0f;
+		//TODO: Find a way to clear this function after this instance is destroyed
+		m_Keyboard.clicked(Keyboard::ky::ARROW_UP, [&]() {
+				std::cout << "Arrow Up pressed, printing on TestCube Class" << std::endl;
+		});
 
 		if (!m_EnableDepthTest)
 		{

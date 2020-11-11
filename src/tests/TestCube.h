@@ -12,6 +12,8 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
+#include "input/Keyboard.h"
+
 namespace test {
 	class TestCube : public Test
 	{
@@ -30,6 +32,7 @@ namespace test {
 		VertexBuffer m_VertexBuffer;
 		VertexBufferLayout m_Layout;
 		Texture m_Texture;
+		input::Keyboard m_Keyboard;
 
 	public:
 		TestCube();
