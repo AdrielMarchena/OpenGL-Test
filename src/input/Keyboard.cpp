@@ -5,7 +5,7 @@ namespace input
 	Keyboard::Keyboard() {
 		//Init the arrays with false values
 		//Zero is for non supported keys
-		const unsigned short qtdKeys = 10;
+		const unsigned short qtdKeys = 12;
 		pressedKeys.reserve(qtdKeys); pressedKeys.assign(qtdKeys, false);
 		clickedKeys.reserve(qtdKeys); clickedKeys.assign(qtdKeys, false);
 		clickedFunction.reserve(qtdKeys); clickedFunction.assign(qtdKeys, [](){});
@@ -21,8 +21,8 @@ namespace input
 				if (clickedFunction[keyAssociated(key)] && !clickedKeys[keyAssociated(key)]) {
 					clickedKeys[keyAssociated(key)] = true;
 					clickedFunction[keyAssociated(key)]();
-					clickedFunction[keyAssociated(key)] = []() {};
 				}
+				clickedFunction[keyAssociated(key)] = []() {};
 			break;
 
 			case GLFW_RELEASE:
@@ -56,6 +56,12 @@ namespace input
 			break;
 		case GLFW_KEY_DOWN:
 			return (int)ARROW_DOWN;
+			break;
+		case GLFW_KEY_W:
+			return (int)W_KEY;
+			break;
+		case GLFW_KEY_S:
+			return (int)S_KEY;
 			break;
 		case GLFW_KEY_SPACE:
 			return (int)SPACEBAR;

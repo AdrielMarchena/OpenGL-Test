@@ -8,7 +8,6 @@ namespace input
 {
 	class Keyboard {
 	private:
-
 		static std::vector<std::function<void()>> clickedFunction;
 		static std::vector<bool> pressedKeys;
 		static std::vector<bool> clickedKeys;
@@ -23,6 +22,8 @@ namespace input
 			ARROW_LEFT,
 			ARROW_UP,
 			ARROW_DOWN,
+			W_KEY,
+			S_KEY,
 			SPACEBAR,
 			PLUS_KEY,
 			MINUS_KEY,
@@ -36,10 +37,4 @@ namespace input
 	private:
 		inline int keyAssociated(int key);
 	};
-	/*std::vector<std::function<void()>> clickedFunction;
-		static std::vector<bool> pressedKeys;
-		static std::vector<bool> clickedKeys;*/
-	
-
-
 }
