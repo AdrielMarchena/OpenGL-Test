@@ -2,7 +2,6 @@
 #include "imgui/imgui.h"
 #include "GLFW/glfw3.h"
 
-
 /*I know this is dumb, sorry :D*/
 #define VERTICES_CUBE \
 -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,\
@@ -49,16 +48,18 @@
 
 namespace test{
 	TestCube::TestCube()
-		:m_Position{ VERTICES_CUBE },
+		:m_VerticesData{ VERTICES_CUBE },
 		 m_Color{ 0.0f,1.0f,1.0f,1.0f },
 		m_Angle(20.0f),
 		m_Rotation(0.0f),
 		m_RotateTime(1.0f),
 		m_AutoRot(false),
 		m_EnableDepthTest(true),
+		m_Position(0.0f, 0.0f, -3.0f),
+		m_CameraVelocity(0.02f,0.02f,0.02f),
 		m_Shader("res/shader/cube.shader"),
 		m_VertexArray(),
-		m_VertexBuffer(m_Position,5 * 36 * sizeof(float)),
+		m_VertexBuffer(m_VerticesData,5 * 36 * sizeof(float)),
 		m_Layout(),
 		m_Texture("res/textures/texture.png")
 		//End Init list
@@ -71,6 +72,10 @@ namespace test{
 		m_Texture.Bind();
 		m_Shader.SetUniform1i("texture", 0);
 		GLCall(glEnable(GL_DEPTH_TEST));
+
+		//This mess clear the console, i don't wanna use system()
+		std::cout << "\x1B[2J\x1B[H";
+		std::cout << "Arrow keys, 'W' and 'S' keys moves the camera" << std::endl;
 	}
 
 	TestCube::~TestCube()
@@ -80,13 +85,7 @@ namespace test{
 
 	void TestCube::OnUpdate(float deltaTime)
 	{
-		using namespace input;
-		static float rot = 1.0f;
-		//TODO: Find a way to clear this function after this instance is destroyed
-		m_Keyboard.clicked(Keyboard::ky::ARROW_UP, [&]() {
-				std::cout << "Arrow Up pressed, printing on TestCube Class" << std::endl;
-		});
-
+		inputs();
 		if (!m_EnableDepthTest)
 		{
 			GLCall(glDisable(GL_DEPTH_TEST));
@@ -97,11 +96,11 @@ namespace test{
 		}
 			
 		glm::mat4 view = glm::mat4(1.0f);
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		view = glm::translate(view, m_Position);
 		m_Shader.SetUniformMat4f("view", view);
 
 		glm::mat4 projection;
-		projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(45.0f), 940.0f / 540.0f, 0.1f, 100.0f);
 		m_Shader.SetUniformMat4f("projection", projection);
 
 		glm::mat4 model = glm::mat4(1.0f);
@@ -128,7 +127,6 @@ namespace test{
 			GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		}
 		
-
 		m_VertexArray.Bind();
 		m_Shader.Bind();
 		GLCall(glDrawArrays(GL_TRIANGLES, 0, 36));
@@ -143,7 +141,45 @@ namespace test{
 		ImGui::SliderFloat("Angle", &m_Angle, 1.0f, 100.0f);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRot);
 		ImGui::Checkbox("Depth Test", &m_EnableDepthTest);
+		ImGui::SliderFloat3("Camera Velocity", &m_CameraVelocity.x, 0.02f, 1.0f);
 
 	}
 
+	glm::vec3 TestCube::getViewPosition()
+	{
+		return m_Position;
+	}
+
+	inline void TestCube::inputs()
+	{
+		using namespace input;
+		
+		//Y
+		if (m_Keyboard.isPress(Keyboard::ky::ARROW_UP))
+		{
+			m_Position.y -= m_CameraVelocity.y;
+		}
+		if (m_Keyboard.isPress(Keyboard::ky::ARROW_DOWN))
+		{
+			m_Position.y += m_CameraVelocity.y;
+		}
+		//X
+		if (m_Keyboard.isPress(Keyboard::ky::ARROW_LEFT))
+		{
+			m_Position.x += m_CameraVelocity.x;
+		}
+		if (m_Keyboard.isPress(Keyboard::ky::ARROW_RIGHT))
+		{
+			m_Position.x -= m_CameraVelocity.x;
+		}
+		//Z
+		if (m_Keyboard.isPress(Keyboard::ky::W_KEY))
+		{
+			m_Position.z += m_CameraVelocity.z;
+		}
+		if (m_Keyboard.isPress(Keyboard::ky::S_KEY))
+		{
+			m_Position.z -= m_CameraVelocity.z;
+		}
+	}
 }

@@ -18,14 +18,16 @@ namespace test {
 	class TestCube : public Test
 	{
 	private:
-
-		float m_Position[180];
+		float m_VerticesData[180];
 		float m_Color[4];
 		float m_Angle;
 		float m_Rotation;
 		float m_RotateTime;
 		bool m_AutoRot;
 		bool m_EnableDepthTest;
+
+		glm::vec3 m_Position;
+		glm::vec3 m_CameraVelocity;
 
 		Shader m_Shader;
 		VertexArray m_VertexArray;
@@ -41,5 +43,10 @@ namespace test {
 		void OnUpdate(float deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
+
+		glm::vec3 getViewPosition();
+
+	private:
+		inline void inputs();
 	};
 }
