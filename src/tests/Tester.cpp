@@ -4,6 +4,7 @@
 #include "TestClearColor.h"
 #include "TestCube.h"
 #include "TestTriangle.h"
+#include "TestPyramid.h"
 
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
@@ -43,6 +44,13 @@ namespace test {
 			m_ActualTest = new TestClearColor();
 			m_ClearColorSelected = false;
 		}
+		if(m_PyramidSelected)
+		{
+			if (m_ActualTest != nullptr)
+				delete m_ActualTest;
+			m_ActualTest = new TestPyramid();
+			m_PyramidSelected = false;
+		}
 	}
 
 	inline void Tester::showMenu()
@@ -50,6 +58,7 @@ namespace test {
 		ImGui::MenuItem("Cube test", NULL, &m_CubeSelected);
 		ImGui::MenuItem("Triangle test", NULL, &m_TriangleSelected);
 		ImGui::MenuItem("Clear Color test", NULL, &m_ClearColorSelected);
+		ImGui::MenuItem("Pyramid", NULL, &m_PyramidSelected);
 	}
 
 	void Tester::OnRender()

@@ -11,6 +11,7 @@ namespace test {
 		bool m_CubeSelected = false;
 		bool m_TriangleSelected = false;
 		bool m_ClearColorSelected = false;
+		bool m_PyramidSelected = false;
 	public:
 		Tester();
 		~Tester();
