@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -27,6 +27,7 @@
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\tests\TestCube.cpp" />
     <ClCompile Include="src\tests\Tester.cpp" />
+    <ClCompile Include="src\tests\TestPyramid.cpp" />
     <ClCompile Include="src\tests\TestTriangle.cpp" />
     <ClCompile Include="src\vendor\glm\detail\glm.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shader\Pyramid.shader" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Adv.shader" />
     <None Include="res\shader\cube.shader" />
@@ -190,6 +192,7 @@
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\TestCube.h" />
     <ClInclude Include="src\tests\Tester.h" />
+    <ClInclude Include="src\tests\TestPyramid.h" />
     <ClInclude Include="src\tests\TestTriangle.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />

@@ -75,6 +75,9 @@
     <ClCompile Include="src\input\Keyboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestPyramid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -491,6 +494,7 @@
     <None Include="res\shader\cube.shader" />
     <None Include=".gitignore" />
     <None Include="README.MD" />
+    <None Include="res\shader\Pyramid.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -1403,6 +1407,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\input\Keyboard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tests\TestPyramid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

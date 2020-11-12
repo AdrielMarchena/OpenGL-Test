@@ -64,7 +64,6 @@ namespace test{
 		m_Texture("res/textures/texture.png")
 		//End Init list
 	{
-
 		m_Shader.Bind();
 		m_Layout.Push<float>(3);
 		m_Layout.Push<float>(2);
@@ -74,7 +73,7 @@ namespace test{
 		GLCall(glEnable(GL_DEPTH_TEST));
 
 		//This mess clear the console, i don't wanna use system()
-		std::cout << "\x1B[2J\x1B[H";
+		std::cout << "\x1B[2J\x1B[H" << std::endl;
 		std::cout << "Arrow keys, 'W' and 'S' keys moves the camera" << std::endl;
 	}
 
