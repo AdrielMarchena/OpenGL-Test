@@ -3,12 +3,21 @@
 #include "imgui/imgui.h"
 
 #define TRIANGLE_PRY \
- 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, \
+ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,\
 -1.0f,-1.0f, 1.0f, 1.0f, 0.0f,\
  1.0f,-1.0f, 1.0f, 1.0f, 1.0f,\
+\
+ 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,\
+ 1.0f,-1.0f, 1.0f, 1.0f, 0.0f,\
  1.0f,-1.0f,-1.0f, 1.0f, 1.0f,\
+\
+0.0f, 1.0f, 0.0f, 0.0f, 0.0f,\
+1.0f,-1.0f,-1.0f, 1.0f, 0.0f,\
+-1.0f,-1.0f,-1.0f, 1.0f, 1.0f,\
+\
+0.0f, 1.0f, 0.0f, 0.0f, 0.0f,\
 -1.0f,-1.0f,-1.0f, 1.0f, 0.0f,\
--1.0f,-1.0f, 1.0f, 0.0f, 0.0f, 
+-1.0f,-1.0f, 1.0f, 1.0f, 1.0f
 
 namespace test {
 	TestPyramid::TestPyramid()
@@ -23,7 +32,7 @@ namespace test {
 		m_CameraVelocity(0.02f, 0.02f, 0.02f),
 		m_Shader("res/shader/cube.shader"),
 		m_VertexArray(),
-		m_VertexBuffer(m_VerticesData, 5 * 6 * sizeof(float)),
+		m_VertexBuffer(m_VerticesData, 5 * 12 * sizeof(float)),
 		m_Layout(),
 		m_Texture("res/textures/texture.png")
 		//End Init list
@@ -100,7 +109,7 @@ namespace test {
 
 		m_VertexArray.Bind();
 		m_Shader.Bind();
-		GLCall(glDrawArrays(GL_TRIANGLE_FAN, 0, 6));
+		GLCall(glDrawArrays(GL_TRIANGLES, 0, 12));
 	}
 	void TestPyramid::OnImGuiRender()
 	{

@@ -18,7 +18,7 @@ namespace test {
 	class TestPyramid : public Test
 	{
 	private:
-		float m_VerticesData[36];
+		float m_VerticesData[72];
 		float m_Color[4];
 		float m_Angle;
 		float m_Rotation;
