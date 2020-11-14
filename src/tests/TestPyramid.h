@@ -21,10 +21,12 @@ namespace test {
 		float m_VerticesData[72];
 		float m_Color[4];
 		float m_Angle;
-		float m_Rotation;
 		float m_RotateTime;
+		float m_PerspectiveRadians;
 		bool m_AutoRot;
 		bool m_EnableDepthTest;
+
+		glm::vec3 m_Rotation;
 
 		glm::vec3 m_Position;
 		glm::vec3 m_CameraVelocity;
