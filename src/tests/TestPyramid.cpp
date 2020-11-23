@@ -117,7 +117,7 @@ namespace test {
 
 		if (m_AutoRot)
 			ImGui::SliderFloat("Rotation Time", &m_RotateTime, 0.02f, 3.0f);
-		ImGui::SliderFloat3("Rotation", &m_Rotation.x, 0.0f, 1.0f);
+		ImGui::SliderFloat3("Rotation", &m_Rotation.x, 0.01f, 1.0f);
 		ImGui::SliderFloat("Angle", &m_Angle, 1.0f, 100.0f);
 		ImGui::SliderFloat("FOV", &m_PerspectiveRadians, 1.0f, 90.0f);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRot);
