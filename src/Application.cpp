@@ -22,8 +22,13 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-#include "tests/Tester.h"
+#include "tests/Test.h"
 #include "input/Keyboard.h"
+
+#include "tests/TestCube.h"
+#include "tests/TestClearColor.h"
+#include "tests/TestPyramid.h"
+#include "tests/TestTriangle.h"
 
 std::vector<std::function<void()>> input::Keyboard::clickedFunction = { []() {} };
 std::vector<bool> input::Keyboard::pressedKeys = { 0 };
@@ -88,7 +93,14 @@ int main(void)
 
         ImGui_ImplOpenGL3_Init((char *)glGetString(GL_NUM_SHADING_LANGUAGE_VERSIONS));
 
-        test::Tester test;
+        test::Test* currentTest = nullptr;
+        test::TestMenu* testMenu = new test::TestMenu(currentTest);
+        currentTest = testMenu;
+
+        testMenu->RegisterTest<test::TestCube>("Cube Test");
+        testMenu->RegisterTest<test::TestPyramid>("Pyramid Test");
+        testMenu->RegisterTest<test::TestTriangle>("Triangle Test");
+        testMenu->RegisterTest<test::TestClearColor>("Clear Color Test");
 
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
@@ -96,15 +108,26 @@ int main(void)
             /* Render here */
             renderer.Clear();
 
-            test.OnUpdate(0.0f);
-
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
 
-            test.OnRender();
-            test.OnImGuiRender();
-            
+            if (currentTest)
+            {
+                currentTest->OnUpdate(0.0f);
+                currentTest->OnRender();
+                ImGui::Begin("Test");
+
+                if (currentTest != testMenu && ImGui::Button("<-"))
+                {
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
+
+                currentTest->OnImGuiRender();
+                ImGui::End();
+            }
+
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
