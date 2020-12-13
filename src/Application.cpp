@@ -29,6 +29,7 @@
 #include "tests/TestClearColor.h"
 #include "tests/TestPyramid.h"
 #include "tests/TestTriangle.h"
+#include "tests/TestTexture2D.h"
 
 std::vector<std::function<void()>> input::Keyboard::clickedFunction = { []() {} };
 std::vector<bool> input::Keyboard::pressedKeys = { 0 };
@@ -100,6 +101,7 @@ int main(void)
         testMenu->RegisterTest<test::TestCube>("Cube Test");
         testMenu->RegisterTest<test::TestPyramid>("Pyramid Test");
         testMenu->RegisterTest<test::TestTriangle>("Triangle Test");
+        testMenu->RegisterTest<test::TestTexture2D>("Texture2D Test");
         testMenu->RegisterTest<test::TestClearColor>("Clear Color Test");
 
         /* Loop until the user closes the window */
