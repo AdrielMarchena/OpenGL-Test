@@ -114,7 +114,6 @@ namespace test{
 			model = glm::rotate(model, ((float)glfwGetTime() * m_RotateTime) * glm::radians(50.0f), m_Rotation);
 		}
 		m_Shader.SetUniformMat4f("model", model);
-		m_Shader.SetUniform4f("u_Color", m_Color[0], m_Color[1], m_Color[2], m_Color[3]);
 	}
 
 	void TestCube::OnRender()
@@ -143,7 +142,6 @@ namespace test{
 		ImGui::Checkbox("Auto Rotate", &m_AutoRot);
 		ImGui::Checkbox("Depth Test", &m_EnableDepthTest);
 		ImGui::SliderFloat3("Camera Velocity", &m_CameraVelocity.x, 0.02f, 1.0f);
-		ImGui::ColorEdit4("Clear Color", m_Color);
 
 	}
 
