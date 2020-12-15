@@ -1,43 +1,22 @@
 #pragma once
 #include "Test.h"
 
-#include "Shader.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
+#include <memory>
+
 #include "VertexBuffer.h"
+#include "VertexArray.h"
 #include "VertexBufferLayout.h"
+#include "Shader.h"
 #include "Texture.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 
-#include "input/Keyboard.h"
-
-namespace test {
+namespace test
+{
 	class TestCube : public Test
 	{
-	private:
-		float m_VerticesData[180];
-		float m_Color[4];
-		float m_Angle;
-		float m_RotateTime;
-		float m_PerspectiveRadians;
-		bool m_AutoRot;
-		bool m_EnableDepthTest;
-
-		glm::vec3 m_Rotation;
-
-		glm::vec3 m_Position;
-		glm::vec3 m_CameraVelocity;
-
-		Shader m_Shader;
-		VertexArray m_VertexArray;
-		VertexBuffer m_VertexBuffer;
-		VertexBufferLayout m_Layout;
-		Texture m_Texture;
-		input::Keyboard m_Keyboard;
-
 	public:
 		TestCube();
 		~TestCube();
@@ -45,10 +24,25 @@ namespace test {
 		void OnUpdate(float deltaTime) override;
 		void OnRender() override;
 		void OnImGuiRender() override;
-
-		glm::vec3 getViewPosition();
-
 	private:
-		inline void inputs();
+
+		float m_FOV = 45.0f;
+		float m_Angle = 20.0f;
+		float m_RotationVelocity = 1.0f;
+		bool m_AutoRotate = false;
+
+		glm::vec3 m_Rotation = { 1.0f,1.0f,1.0f };
+
+		glm::vec3 m_Position = { 0.0f, 0.0f, -3.0f };
+
+		std::unique_ptr<VertexArray> m_VAO;
+		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<Texture> m_Texture;
+
+		std::unique_ptr<VertexBuffer> m_LightVAO;
+		std::unique_ptr<Shader> m_LightShader;
+		std::unique_ptr<VertexBuffer> m_LightVertexBuffer;
 	};
 }
+
