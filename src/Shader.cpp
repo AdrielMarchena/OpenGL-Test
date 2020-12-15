@@ -117,7 +117,6 @@ unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
     const char* src = source.c_str();
     GLCall(glShaderSource(id, 1, &src, nullptr));
     GLCall(glCompileShader(id));
-
     //Error handling
     int result;
     GLCall(glGetShaderiv(id, GL_COMPILE_STATUS, &result));

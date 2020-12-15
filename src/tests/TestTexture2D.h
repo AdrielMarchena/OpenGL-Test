@@ -30,7 +30,6 @@ namespace test {
 		std::unique_ptr<Texture> m_Texture;
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 
-
 		glm::mat4 m_Proj;
 		glm::mat4 m_View;
 

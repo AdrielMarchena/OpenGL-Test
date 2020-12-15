@@ -44,8 +44,17 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         glfwMaximizeWindow(window);*/
 }
 
+void lowerCase(std::string& w)
+{
+
+    for (int i = 0; i < w.size(); i++)
+        w[i] = std::tolower(w[i]);
+
+}
+
 int main(void)
 {
+   
     GLFWwindow* window;
 
     /* Initialize the library */
@@ -64,7 +73,6 @@ int main(void)
         glfwTerminate();
         return -1;
     }
-
     /* Make the window's context current */
     glfwMakeContextCurrent(window);
     
