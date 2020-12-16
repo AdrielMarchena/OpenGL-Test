@@ -24,6 +24,8 @@
 
 #include "tests/Test.h"
 #include "input/Keyboard.h"
+#include "input/Mouse.h"
+
 
 #include "tests/TestCube.h"
 #include "tests/TestClearColor.h"
@@ -43,6 +45,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     KeyBoard_Global.handleInputs(window, key, scancode, action, mods);
     /*if(key == GLFW_KEY_F11)
         glfwMaximizeWindow(window);*/
+}
+
+float lastX = 960.0f / 2.0f;
+float lastY = 540.0f / 2.0f;
+bool firstMouse = true;
+double input::Mouse::mouse_pos_x = 0.0;
+double input::Mouse::mouse_pos_y = 0.0;
+
+input::Mouse Mouse_Global;
+
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    Mouse_Global.handleInput(xpos, ypos);
 }
 
 void lowerCase(std::string& w)
@@ -91,6 +106,7 @@ int main(void)
 
         //Callback func to keyboard events
         glfwSetKeyCallback(window, key_callback);
+        glfwSetCursorPosCallback(window, cursor_position_callback);
 
         Renderer renderer;
 

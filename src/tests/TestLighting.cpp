@@ -10,6 +10,7 @@
 namespace test
 {
 	TestLighting::TestLighting()
+		:camera(glm::vec3(0.0f,0.0f,3.0f))
 	{
 		float vertices[] = { VERTICES_LIGHT_CUBE };
 
@@ -65,23 +66,22 @@ namespace test
 		m_Shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
 		m_Shader->SetUniform3f("lightPos", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
 
-		glm::mat4 view = glm::mat4(1.0f);
-		view = glm::translate(view, m_Position);
+		glm::mat4 view = camera.GetViewMatrix();
 		m_Shader->SetUniformMat4f("view", view);
 
 		glm::mat4 projection;
-		projection = glm::perspective(glm::radians(m_FOV), 940.0f / 540.0f, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(camera.Zoom), 940.0f / 540.0f, 0.1f, 100.0f);
 		m_Shader->SetUniformMat4f("projection", projection);
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::rotate(model, glm::radians(m_Angle), glm::vec3(0.0f, 1.0f, 1.0f));
 		if (!m_AutoRotate)
 		{
-			model = glm::rotate(model, glm::radians(50.0f), m_Rotation);
+			model = glm::rotate(model, glm::radians(m_Radians), m_Rotation);
 		}
 		else
 		{
-			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), m_Rotation);
+			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(m_Radians), m_Rotation);
 		}
 		m_Shader->SetUniformMat4f("model", model);
 
@@ -95,10 +95,16 @@ namespace test
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, m_LightPosition);
 		model = glm::scale(model, glm::vec3(0.2f));
+		model = glm::rotate(model, glm::radians(m_Angle), glm::vec3(0.0f, 1.0f, 1.0f));
+		if (!m_AutoRotate)
+		{
+			model = glm::rotate(model, glm::radians(50.0f), m_Rotation);
+		}
+		else
+		{
+			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), m_Rotation);
+		}
 		m_LightShader->SetUniformMat4f("model", model);
-
-
-
 	}
 
 	void TestLighting::OnRender()
@@ -119,9 +125,10 @@ namespace test
 
 		if (m_AutoRotate)
 			ImGui::SliderFloat("Rotation Velocity", &m_RotationVelocity, 0.02f, 3.0f);
-		ImGui::SliderFloat("Angle", &m_Angle, 1.0f, 100.0f);
-		ImGui::SliderFloat("FOV", &m_FOV, 0.01f, 360.0f);
+		ImGui::SliderFloat("Angle", &m_Angle, 0.01f, 360.0f);
+		//ImGui::SliderFloat("FOV", &m_FOV, 0.01f, 360.0f);
 		ImGui::SliderFloat3("Rotation", &m_Rotation.x, 0.01f, 1.0f);
+		ImGui::SliderFloat("Radians", &m_Radians, 0.01f, 100.0f);
 		ImGui::SliderFloat3("Light Cube Pos", &m_LightPosition.x, -3.0f, 3.0f);
 		ImGui::SliderFloat3("Camera Velocity", &m_CameraVelocity.x, 0.02f, 0.5f);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRotate);
@@ -130,6 +137,8 @@ namespace test
 	inline void TestLighting::input()
 	{
 		using namespace input;
+
+		//camera.ProcessMouseMovement(mouse.mouse_pos_x, mouse.mouse_pos_y);
 
 		//Y
 		if (keyboard.isPress(Keyboard::ky::ARROW_UP))
@@ -143,20 +152,20 @@ namespace test
 		//X
 		if (keyboard.isPress(Keyboard::ky::ARROW_LEFT))
 		{
-			m_Position.x += m_CameraVelocity.x;
+			camera.ProcessKeyboard(Camera_Movement::LEFT, 1);
 		}
 		if (keyboard.isPress(Keyboard::ky::ARROW_RIGHT))
 		{
-			m_Position.x -= m_CameraVelocity.x;
+			camera.ProcessKeyboard(Camera_Movement::RIGHT, 1);
 		}
 		//Z
 		if (keyboard.isPress(Keyboard::ky::W_KEY))
 		{
-			m_Position.z += m_CameraVelocity.z;
+			camera.ProcessKeyboard(Camera_Movement::FORWARD, 1);
 		}
 		if (keyboard.isPress(Keyboard::ky::S_KEY))
 		{
-			m_Position.z -= m_CameraVelocity.z;
+			camera.ProcessKeyboard(Camera_Movement::BACKWARD, 1);
 		}
 		keyboard.clicked(Keyboard::ky::ESC_KEY, [&]() {
 			std::cout << "Position X: " << m_Position.x << std::endl;

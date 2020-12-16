@@ -192,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\input\Keyboard.h" />
+    <ClInclude Include="src\input\Mouse.h" />
     <ClInclude Include="src\tests\DumbDefine.h" />
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
@@ -199,6 +200,7 @@
     <ClInclude Include="src\tests\TestPyramid.h" />
     <ClInclude Include="src\tests\TestTexture2D.h" />
     <ClInclude Include="src\tests\TestTriangle.h" />
+    <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />
