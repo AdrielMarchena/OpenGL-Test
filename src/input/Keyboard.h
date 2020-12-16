@@ -16,7 +16,7 @@ namespace input
 		Keyboard();
 		~Keyboard();
 
-		enum ky {
+		static enum ky {
 			INVALID,
 			ARROW_RIGHT,
 			ARROW_LEFT,
@@ -37,6 +37,6 @@ namespace input
 		bool isPress(const ky& k);
 		void clicked(const ky& k, const std::function<void()>& func);
 	private:
-		inline int keyAssociated(int key);
+		static inline int keyAssociated(int key);
 	};
 }

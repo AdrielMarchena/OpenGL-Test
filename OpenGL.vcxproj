@@ -41,8 +41,11 @@
     <ClCompile Include="src\VertexBuffer.cpp" />
     <ClCompile Include="src\VertexArray.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\tests\TestLighting.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shader\lightCube.shader" />
+    <None Include="res\shader\lightedCube.shader" />
     <None Include="res\shader\Pyramid.shader" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Adv.shader" />
@@ -189,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\input\Keyboard.h" />
+    <ClInclude Include="src\tests\DumbDefine.h" />
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\TestCube.h" />
@@ -493,6 +497,7 @@
     <ClInclude Include="src\VertexArray.h" />
     <ClInclude Include="src\VertexBufferLayout.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\tests\TestLighting.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
