@@ -11,10 +11,10 @@ namespace test
 {
 	TestLighting::TestLighting()
 	{
-		float vertices[] = { VERTICES_NO_TEXTURE_CUBE };
+		float vertices[] = { VERTICES_LIGHT_CUBE };
 
 		// Vertex Buffer
-		m_VertexBuffer = std::make_unique<VertexBuffer>(vertices, 5 * 36 * sizeof(float));
+		m_VertexBuffer = std::make_unique<VertexBuffer>(vertices, 6 * 36 * sizeof(float));
 
 		// Shader
 		m_Shader = std::make_unique<Shader>("res/shader/lightedCube.shader");
@@ -23,9 +23,11 @@ namespace test
 		// Cube uniforms
 		m_Shader->SetUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
 		m_Shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
+		m_Shader->SetUniform3f("lightPos", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
 
 		//Layout
 		VertexBufferLayout cubeLayout;
+		cubeLayout.Push<float>(3);
 		cubeLayout.Push<float>(3);
 
 		// Vertex Array
@@ -40,10 +42,12 @@ namespace test
 
 		VertexBufferLayout lightLayout;
 		lightLayout.Push<float>(3);
+		lightLayout.Push<float>(3);
 
 		m_LightVAO = std::make_unique<VertexArray>();
 		m_LightVAO->AddBuffer(*m_LightVertexBuffer, lightLayout);
 
+		GLCall(glEnable(GL_DEPTH_TEST));
 	}
 
 	TestLighting::~TestLighting()
@@ -55,6 +59,11 @@ namespace test
 	{
 		input();
 		m_Shader->Bind();
+
+		// Cube uniforms
+		m_Shader->SetUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
+		m_Shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
+		m_Shader->SetUniform3f("lightPos", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
 
 		glm::mat4 view = glm::mat4(1.0f);
 		view = glm::translate(view, m_Position);
@@ -88,6 +97,8 @@ namespace test
 		model = glm::scale(model, glm::vec3(0.2f));
 		m_LightShader->SetUniformMat4f("model", model);
 
+
+
 	}
 
 	void TestLighting::OnRender()
@@ -111,6 +122,7 @@ namespace test
 		ImGui::SliderFloat("Angle", &m_Angle, 1.0f, 100.0f);
 		ImGui::SliderFloat("FOV", &m_FOV, 0.01f, 360.0f);
 		ImGui::SliderFloat3("Rotation", &m_Rotation.x, 0.01f, 1.0f);
+		ImGui::SliderFloat3("Light Cube Pos", &m_LightPosition.x, -3.0f, 3.0f);
 		ImGui::SliderFloat3("Camera Velocity", &m_CameraVelocity.x, 0.02f, 0.5f);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRotate);
 	}
