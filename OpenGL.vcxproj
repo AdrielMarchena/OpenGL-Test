@@ -27,6 +27,7 @@
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\tests\TestCube.cpp" />
+    <ClCompile Include="src\tests\TestMaterials.cpp" />
     <ClCompile Include="src\tests\TestPyramid.cpp" />
     <ClCompile Include="src\tests\TestTexture2D.cpp" />
     <ClCompile Include="src\tests\TestTriangle.cpp" />
@@ -46,6 +47,7 @@
   <ItemGroup>
     <None Include="res\shader\lightCube.shader" />
     <None Include="res\shader\lightedCube.shader" />
+    <None Include="res\shader\Materials.shader" />
     <None Include="res\shader\Pyramid.shader" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Adv.shader" />
@@ -193,10 +195,12 @@
   <ItemGroup>
     <ClInclude Include="src\input\Keyboard.h" />
     <ClInclude Include="src\input\Mouse.h" />
+    <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\tests\DumbDefine.h" />
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\TestCube.h" />
+    <ClInclude Include="src\tests\TestMaterials.h" />
     <ClInclude Include="src\tests\TestPyramid.h" />
     <ClInclude Include="src\tests\TestTexture2D.h" />
     <ClInclude Include="src\tests\TestTriangle.h" />

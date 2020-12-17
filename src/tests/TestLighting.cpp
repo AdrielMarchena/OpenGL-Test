@@ -41,6 +41,8 @@ namespace test
 		m_LightShader = std::make_unique<Shader>("res/shader/lightCube.shader");
 		m_LightShader->Bind();
 
+		m_LightShader->SetUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
+
 		VertexBufferLayout lightLayout;
 		lightLayout.Push<float>(3);
 		lightLayout.Push<float>(3);

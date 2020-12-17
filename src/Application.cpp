@@ -33,6 +33,7 @@
 #include "tests/TestTriangle.h"
 #include "tests/TestTexture2D.h"
 #include "tests/TestLighting.h"
+#include "tests/TestMaterials.h"
 
 std::vector<std::function<void()>> input::Keyboard::clickedFunction = { []() {} };
 std::vector<bool> input::Keyboard::pressedKeys = { 0 };
@@ -137,6 +138,7 @@ int main(void)
         currentTest = testMenu;
 
         testMenu->RegisterTest<test::TestLighting>("Light Test");
+        testMenu->RegisterTest<test::TestMaterials>("Material Test");
         testMenu->RegisterTest<test::TestCube>("Cube Test");
         testMenu->RegisterTest<test::TestPyramid>("Pyramid Test");
         testMenu->RegisterTest<test::TestTriangle>("Triangle Test");
