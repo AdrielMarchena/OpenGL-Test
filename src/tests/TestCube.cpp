@@ -44,12 +44,12 @@ namespace test
 	void TestCube::OnUpdate(float deltaTime)
 	{
 
-		glm::mat4 view = glm::mat4(1.0f);
-		view = glm::translate(view, m_Position);
+		input();
+		glm::mat4 view = camera.GetViewMatrix();
 		m_Shader->SetUniformMat4f("view", view);
 
 		glm::mat4 projection;
-		projection = glm::perspective(glm::radians(m_FOV), 940.0f / 540.0f, 0.1f, 100.0f);
+		projection = glm::perspective(glm::radians(camera.Zoom), 940.0f / 540.0f, 0.1f, 100.0f);
 		m_Shader->SetUniformMat4f("projection", projection);
 
 		glm::mat4 model = glm::mat4(1.0f);
@@ -68,6 +68,7 @@ namespace test
 
 	void TestCube::OnRender()
 	{
+		GLCall(glClearColor(m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		m_VAO->Bind();
@@ -84,8 +85,67 @@ namespace test
 
 		ImGui::SliderFloat3("Rotation", &m_Rotation.x, 0.01f, 1.0f);
 		ImGui::SliderFloat("Angle", &m_Angle, 1.0f, 100.0f);
-		ImGui::SliderFloat("FOV", &m_FOV, 1.0f, 90.0f);
+		ImGui::SliderFloat("FOV", &camera.Zoom, 1.0f, 90.0f);
+		ImGui::ColorEdit4("Background Color", m_clearColor);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRotate);
+
+	}
+
+	inline void TestCube::input()
+	{
+		using namespace input;
+
+		static float oldMX = 0.0f;
+		static float oldMY = 0.0f;
+		static bool shouldMouse = false, Will = false;
+
+		if (oldMX == Mouse::mouse_pos_x && oldMY == Mouse::mouse_pos_y)
+			shouldMouse = false;
+		else
+			shouldMouse = true;
+
+		//X
+		if (keyboard.isPress(Keyboard::ky::A_KEY))
+		{
+			camera.ProcessKeyboard(Camera_Movement::LEFT, m_CameraVelocity.x);
+		}
+		if (keyboard.isPress(Keyboard::ky::D_KEY))
+		{
+			camera.ProcessKeyboard(Camera_Movement::RIGHT, m_CameraVelocity.x);
+		}
+		//Z
+		if (keyboard.isPress(Keyboard::ky::W_KEY))
+		{
+			camera.ProcessKeyboard(Camera_Movement::FORWARD, m_CameraVelocity.z);
+		}
+		if (keyboard.isPress(Keyboard::ky::S_KEY))
+		{
+			camera.ProcessKeyboard(Camera_Movement::BACKWARD, m_CameraVelocity.z);
+		}
+		keyboard.clicked(Keyboard::ky::ARROW_DOWN, [&]() {
+			GLFWwindow* window = glfwGetCurrentContext();
+			if (window)
+			{
+				GLCall(glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED));
+				Will = true;
+			}
+
+		});
+
+		keyboard.clicked(Keyboard::ky::ARROW_UP, [&]() {
+			GLFWwindow* window = glfwGetCurrentContext();
+			if (window)
+			{
+				GLCall(glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL));
+				Will = false;
+			}
+		});
+
+		if (shouldMouse && Will)
+			camera.ProcessMouseMovement(mouse.mouse_pos_x, mouse.mouse_pos_y);
+
+		oldMX = Mouse::mouse_pos_x;
+		oldMY = Mouse::mouse_pos_y;
 
 	}
 
