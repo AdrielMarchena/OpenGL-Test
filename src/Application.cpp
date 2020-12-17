@@ -52,12 +52,24 @@ float lastY = 540.0f / 2.0f;
 bool firstMouse = true;
 double input::Mouse::mouse_pos_x = 0.0;
 double input::Mouse::mouse_pos_y = 0.0;
-
 input::Mouse Mouse_Global;
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    Mouse_Global.handleInput(xpos, ypos);
+    if (firstMouse)
+    {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+
+    float xpox = xpos - lastX;
+    float ypox = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    lastX = xpos;
+    lastY = ypos;
+
+    Mouse_Global.handleInput(xpox, ypox);
 }
 
 void lowerCase(std::string& w)
@@ -107,6 +119,7 @@ int main(void)
         //Callback func to keyboard events
         glfwSetKeyCallback(window, key_callback);
         glfwSetCursorPosCallback(window, cursor_position_callback);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
         Renderer renderer;
 
@@ -130,9 +143,17 @@ int main(void)
         testMenu->RegisterTest<test::TestClearColor>("Clear Color Test");
         testMenu->RegisterTest<test::TestLighting>("Light Test");
 
+        float deltaTime = 0.0f;	// time between current frame and last frame
+        float lastFrame = 0.0f;
+
         /* Loop until the user closes the window */
         while (!glfwWindowShouldClose(window))
         {
+
+            float currentFrame = glfwGetTime();
+            deltaTime = currentFrame - lastFrame;
+            lastFrame = currentFrame;
+
             /* Render here */
             renderer.Clear();
 
@@ -142,7 +163,7 @@ int main(void)
 
             if (currentTest)
             {
-                currentTest->OnUpdate(0.0f);
+                currentTest->OnUpdate(deltaTime);
                 currentTest->OnRender();
                 ImGui::Begin("Test");
 

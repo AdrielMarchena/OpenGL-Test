@@ -25,7 +25,7 @@ namespace test
 		m_Shader->SetUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
 		m_Shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
 		m_Shader->SetUniform3f("lightPos", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
-
+		m_Shader->SetUniform3f("viewPos", camera.Position.x,camera.Position.y,camera.Position.z);
 		//Layout
 		VertexBufferLayout cubeLayout;
 		cubeLayout.Push<float>(3);
@@ -54,6 +54,7 @@ namespace test
 	TestLighting::~TestLighting()
 	{
 		GLCall(glDisable(GL_DEPTH_TEST));
+
 	}
 
 	void test::TestLighting::OnUpdate(float deltaTime)
@@ -65,6 +66,7 @@ namespace test
 		m_Shader->SetUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
 		m_Shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
 		m_Shader->SetUniform3f("lightPos", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
+		m_Shader->SetUniform3f("viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
 		glm::mat4 view = camera.GetViewMatrix();
 		m_Shader->SetUniformMat4f("view", view);
@@ -125,12 +127,10 @@ namespace test
 
 		if (m_AutoRotate)
 			ImGui::SliderFloat("Rotation Velocity", &m_RotationVelocity, 0.02f, 3.0f);
-		ImGui::SliderFloat("Angle", &m_Angle, 0.01f, 360.0f);
-		//ImGui::SliderFloat("FOV", &m_FOV, 0.01f, 360.0f);
-		ImGui::SliderFloat3("Rotation", &m_Rotation.x, 0.01f, 1.0f);
+		ImGui::SliderFloat("FOV", &camera.Zoom, 0.01f, 360.0f);
 		ImGui::SliderFloat("Radians", &m_Radians, 0.01f, 100.0f);
 		ImGui::SliderFloat3("Light Cube Pos", &m_LightPosition.x, -3.0f, 3.0f);
-		ImGui::SliderFloat3("Camera Velocity", &m_CameraVelocity.x, 0.02f, 0.5f);
+		ImGui::SliderFloat3("Camera Velocity", &m_CameraVelocity.x, 0.02f, 1.0f);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRotate);
 	}
 
@@ -138,7 +138,15 @@ namespace test
 	{
 		using namespace input;
 
-		//camera.ProcessMouseMovement(mouse.mouse_pos_x, mouse.mouse_pos_y);
+		static float oldMX = 0.0f;
+		static float oldMY = 0.0f;
+		static bool shouldMouse = false, Will = false;
+
+		if (oldMX == Mouse::mouse_pos_x && oldMY == Mouse::mouse_pos_y)
+			shouldMouse = false;
+		else
+			shouldMouse = true;
+
 
 		//Y
 		if (keyboard.isPress(Keyboard::ky::ARROW_UP))
@@ -150,28 +158,48 @@ namespace test
 			m_Position.y += m_CameraVelocity.y;
 		}
 		//X
-		if (keyboard.isPress(Keyboard::ky::ARROW_LEFT))
+		if (keyboard.isPress(Keyboard::ky::A_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::LEFT, 1);
+			camera.ProcessKeyboard(Camera_Movement::LEFT, m_CameraVelocity.x);
 		}
-		if (keyboard.isPress(Keyboard::ky::ARROW_RIGHT))
+		if (keyboard.isPress(Keyboard::ky::D_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::RIGHT, 1);
+			camera.ProcessKeyboard(Camera_Movement::RIGHT, m_CameraVelocity.x);
 		}
 		//Z
 		if (keyboard.isPress(Keyboard::ky::W_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::FORWARD, 1);
+			camera.ProcessKeyboard(Camera_Movement::FORWARD, m_CameraVelocity.z);
 		}
 		if (keyboard.isPress(Keyboard::ky::S_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::BACKWARD, 1);
+			camera.ProcessKeyboard(Camera_Movement::BACKWARD, m_CameraVelocity.z);
 		}
-		keyboard.clicked(Keyboard::ky::ESC_KEY, [&]() {
-			std::cout << "Position X: " << m_Position.x << std::endl;
-			std::cout << "Position Y: " << m_Position.y << std::endl;
-			std::cout << "Position Z: " << m_Position.z << std::endl;
+		keyboard.clicked(Keyboard::ky::ARROW_DOWN, [&]() {
+			GLFWwindow* window = glfwGetCurrentContext();
+			if (window)
+			{
+				GLCall(glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED));
+				Will = true;
+			}
+				
 		});
+		
+		keyboard.clicked(Keyboard::ky::ARROW_UP, [&]() {
+			GLFWwindow* window = glfwGetCurrentContext();
+			if (window)
+			{
+				GLCall(glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL));
+				Will = false;
+			}
+		});
+
+		if (shouldMouse && Will)
+			camera.ProcessMouseMovement(mouse.mouse_pos_x, mouse.mouse_pos_y);
+
+		oldMX = Mouse::mouse_pos_x;
+		oldMY = Mouse::mouse_pos_y;
+
 	}
 
 }

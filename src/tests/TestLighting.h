@@ -35,7 +35,7 @@ namespace test
 		float m_RotationVelocity = 1.0f;
 		float m_Radians = 50.0f;
 		bool m_AutoRotate = false;
-		
+
 		input::Keyboard keyboard;
 		input::Mouse mouse;
 		Camera camera;
