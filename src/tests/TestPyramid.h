@@ -10,33 +10,31 @@
 #include "Texture.h"
 
 #include "input/Keyboard.h"
+#include "input/Mouse.h"
+
+#include "camera.h"
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
+
+#include <memory>
 namespace test {
 	class TestPyramid : public Test
 	{
 	private:
-		float m_VerticesData[72];
-		float m_Color[4];
-		float m_Angle;
-		float m_RotateTime;
-		float m_PerspectiveRadians;
-		bool m_AutoRot;
-		bool m_EnableDepthTest;
+		float m_clearColor[4] = { 1.0f,1.0f,1.0f,1.0f };
+		float m_RotationVelocity = 1.0f;
+		bool m_AutoRotate = false;
 
-		glm::vec3 m_Rotation;
+		input::Keyboard keyboard;
+		input::Mouse mouse;
+		Camera camera;
 
-		glm::vec3 m_Position;
-		glm::vec3 m_CameraVelocity;
-
-		Shader m_Shader;
-		VertexArray m_VertexArray;
-		VertexBuffer m_VertexBuffer;
-		VertexBufferLayout m_Layout;
-		Texture m_Texture;
-		input::Keyboard m_Keyboard;
+		std::unique_ptr<VertexArray> m_VAO;
+		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<VertexBuffer> m_VertexBuffer;
+		std::unique_ptr<Texture> m_Texture;
 	public:
 		TestPyramid();
 		~TestPyramid();
@@ -46,6 +44,6 @@ namespace test {
 		void OnImGuiRender() override;
 
 	private:
-		inline void inputs();
+		inline void input(float deltaTime);
 	};
 }

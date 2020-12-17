@@ -30,8 +30,6 @@ namespace test
 		void OnImGuiRender() override;
 	private:
 
-		float m_FOV = 45.0f;
-		float m_Angle = 20.0f;
 		float m_RotationVelocity = 1.0f;
 		bool m_AutoRotate = false;
 		float m_clearColor[4] = { 0.0f,0.0f,0.0f,0.0f };
@@ -40,18 +38,12 @@ namespace test
 		input::Mouse mouse;
 		Camera camera;
 
-		glm::vec3 m_Rotation = { 1.0f,1.0f,1.0f };
-
-		glm::vec3 m_Position = { 0.0f, 0.0f, -3.0f };
-
-		glm::vec3 m_CameraVelocity = { 0.02f,0.02f,0.02f };
-
 		std::unique_ptr<VertexArray> m_VAO;
 		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<VertexBuffer> m_VertexBuffer;
 		std::unique_ptr<Texture> m_Texture;
 	private:
-		inline void input();
+		inline void input(float deltaTime);
 	};
 }
 

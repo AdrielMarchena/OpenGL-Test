@@ -44,7 +44,7 @@ namespace test
 	void TestCube::OnUpdate(float deltaTime)
 	{
 
-		input();
+		input(deltaTime);
 		glm::mat4 view = camera.GetViewMatrix();
 		m_Shader->SetUniformMat4f("view", view);
 
@@ -53,14 +53,14 @@ namespace test
 		m_Shader->SetUniformMat4f("projection", projection);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::rotate(model, glm::radians(m_Angle), glm::vec3(0.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 1.0f));
 		if (!m_AutoRotate)
 		{
-			model = glm::rotate(model, glm::radians(50.0f), m_Rotation);
+			model = glm::rotate(model, glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		}
 		else
 		{
-			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), m_Rotation);
+			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		}
 		m_Shader->SetUniformMat4f("model", model);
 
@@ -83,15 +83,13 @@ namespace test
 		if (m_AutoRotate)
 			ImGui::SliderFloat("Rotation Velocity", &m_RotationVelocity, 0.02f, 3.0f);
 
-		ImGui::SliderFloat3("Rotation", &m_Rotation.x, 0.01f, 1.0f);
-		ImGui::SliderFloat("Angle", &m_Angle, 1.0f, 100.0f);
 		ImGui::SliderFloat("FOV", &camera.Zoom, 1.0f, 90.0f);
 		ImGui::ColorEdit4("Background Color", m_clearColor);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRotate);
 
 	}
 
-	inline void TestCube::input()
+	inline void TestCube::input(float deltaTime)
 	{
 		using namespace input;
 
@@ -107,20 +105,20 @@ namespace test
 		//X
 		if (keyboard.isPress(Keyboard::ky::A_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::LEFT, m_CameraVelocity.x);
+			camera.ProcessKeyboard(Camera_Movement::LEFT, deltaTime);
 		}
 		if (keyboard.isPress(Keyboard::ky::D_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::RIGHT, m_CameraVelocity.x);
+			camera.ProcessKeyboard(Camera_Movement::RIGHT, deltaTime);
 		}
 		//Z
 		if (keyboard.isPress(Keyboard::ky::W_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::FORWARD, m_CameraVelocity.z);
+			camera.ProcessKeyboard(Camera_Movement::FORWARD, deltaTime);
 		}
 		if (keyboard.isPress(Keyboard::ky::S_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::BACKWARD, m_CameraVelocity.z);
+			camera.ProcessKeyboard(Camera_Movement::BACKWARD, deltaTime);
 		}
 		keyboard.clicked(Keyboard::ky::ARROW_DOWN, [&]() {
 			GLFWwindow* window = glfwGetCurrentContext();
