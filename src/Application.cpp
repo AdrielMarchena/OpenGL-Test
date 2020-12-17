@@ -136,12 +136,12 @@ int main(void)
         test::TestMenu* testMenu = new test::TestMenu(currentTest);
         currentTest = testMenu;
 
+        testMenu->RegisterTest<test::TestLighting>("Light Test");
         testMenu->RegisterTest<test::TestCube>("Cube Test");
         testMenu->RegisterTest<test::TestPyramid>("Pyramid Test");
         testMenu->RegisterTest<test::TestTriangle>("Triangle Test");
         testMenu->RegisterTest<test::TestTexture2D>("Texture2D Test");
         testMenu->RegisterTest<test::TestClearColor>("Clear Color Test");
-        testMenu->RegisterTest<test::TestLighting>("Light Test");
 
         float deltaTime = 0.0f;	// time between current frame and last frame
         float lastFrame = 0.0f;

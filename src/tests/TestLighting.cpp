@@ -53,8 +53,9 @@ namespace test
 
 	TestLighting::~TestLighting()
 	{
+		GLFWwindow* window = glfwGetCurrentContext();
 		GLCall(glDisable(GL_DEPTH_TEST));
-
+		GLCall(glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL));
 	}
 
 	void test::TestLighting::OnUpdate(float deltaTime)
@@ -111,6 +112,7 @@ namespace test
 
 	void TestLighting::OnRender()
 	{
+		GLCall(glClearColor(m_clearColor[0], m_clearColor[1], m_clearColor[2], m_clearColor[3]));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		m_VAO->Bind();
@@ -124,14 +126,13 @@ namespace test
 
 	void TestLighting::OnImGuiRender()
 	{
-
 		if (m_AutoRotate)
 			ImGui::SliderFloat("Rotation Velocity", &m_RotationVelocity, 0.02f, 3.0f);
-		ImGui::SliderFloat("FOV", &camera.Zoom, 0.01f, 360.0f);
-		ImGui::SliderFloat("Radians", &m_Radians, 0.01f, 100.0f);
+		ImGui::SliderFloat("FOV", &camera.Zoom, 0.01f, 90.0f);
 		ImGui::SliderFloat3("Light Cube Pos", &m_LightPosition.x, -3.0f, 3.0f);
-		ImGui::SliderFloat3("Camera Velocity", &m_CameraVelocity.x, 0.02f, 1.0f);
+		ImGui::ColorEdit4("Background Color", m_clearColor);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRotate);
+
 	}
 
 	inline void TestLighting::input()
