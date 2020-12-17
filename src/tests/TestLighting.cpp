@@ -60,7 +60,7 @@ namespace test
 
 	void test::TestLighting::OnUpdate(float deltaTime)
 	{
-		input();
+		input(deltaTime);
 		m_Shader->Bind();
 
 		// Cube uniforms
@@ -77,14 +77,14 @@ namespace test
 		m_Shader->SetUniformMat4f("projection", projection);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::rotate(model, glm::radians(m_Angle), glm::vec3(0.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 1.0f));
 		if (!m_AutoRotate)
 		{
-			model = glm::rotate(model, glm::radians(m_Radians), m_Rotation);
+			model = glm::rotate(model, glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		}
 		else
 		{
-			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(m_Radians), m_Rotation);
+			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		}
 		m_Shader->SetUniformMat4f("model", model);
 
@@ -98,14 +98,14 @@ namespace test
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, m_LightPosition);
 		model = glm::scale(model, glm::vec3(0.2f));
-		model = glm::rotate(model, glm::radians(m_Angle), glm::vec3(0.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 1.0f));
 		if (!m_AutoRotate)
 		{
-			model = glm::rotate(model, glm::radians(50.0f), m_Rotation);
+			model = glm::rotate(model, glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		}
 		else
 		{
-			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), m_Rotation);
+			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		}
 		m_LightShader->SetUniformMat4f("model", model);
 	}
@@ -135,7 +135,7 @@ namespace test
 
 	}
 
-	inline void TestLighting::input()
+	inline void TestLighting::input(float deltaTime)
 	{
 		using namespace input;
 
@@ -148,33 +148,23 @@ namespace test
 		else
 			shouldMouse = true;
 
-
-		//Y
-		if (keyboard.isPress(Keyboard::ky::ARROW_UP))
-		{
-			m_Position.y -= m_CameraVelocity.y;
-		}
-		if (keyboard.isPress(Keyboard::ky::ARROW_DOWN))
-		{
-			m_Position.y += m_CameraVelocity.y;
-		}
 		//X
 		if (keyboard.isPress(Keyboard::ky::A_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::LEFT, m_CameraVelocity.x);
+			camera.ProcessKeyboard(Camera_Movement::LEFT, deltaTime);
 		}
 		if (keyboard.isPress(Keyboard::ky::D_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::RIGHT, m_CameraVelocity.x);
+			camera.ProcessKeyboard(Camera_Movement::RIGHT, deltaTime);
 		}
 		//Z
 		if (keyboard.isPress(Keyboard::ky::W_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::FORWARD, m_CameraVelocity.z);
+			camera.ProcessKeyboard(Camera_Movement::FORWARD, deltaTime);
 		}
 		if (keyboard.isPress(Keyboard::ky::S_KEY))
 		{
-			camera.ProcessKeyboard(Camera_Movement::BACKWARD, m_CameraVelocity.z);
+			camera.ProcessKeyboard(Camera_Movement::BACKWARD, deltaTime);
 		}
 		keyboard.clicked(Keyboard::ky::ARROW_DOWN, [&]() {
 			GLFWwindow* window = glfwGetCurrentContext();
@@ -183,7 +173,6 @@ namespace test
 				GLCall(glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED));
 				Will = true;
 			}
-				
 		});
 		
 		keyboard.clicked(Keyboard::ky::ARROW_UP, [&]() {
@@ -200,7 +189,5 @@ namespace test
 
 		oldMX = Mouse::mouse_pos_x;
 		oldMY = Mouse::mouse_pos_y;
-
 	}
-
 }
