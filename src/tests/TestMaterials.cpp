@@ -14,7 +14,7 @@ namespace test{
 
 		RegisterMaterial();
 
-		m_ActualMaterial = &m_Materials[1];
+		m_ActualMaterial = LocateMaterial("Default");
 
 		// Vertex Buffer
 		m_VertexBuffer = std::make_unique<VertexBuffer>(vertices, 6 * 36 * sizeof(float));
@@ -24,19 +24,17 @@ namespace test{
 		m_Shader->Bind();
 
 		// Cube uniforms
-		m_Shader->SetUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
-		m_Shader->SetUniform3f("lightColor", m_LightColor.x, m_LightColor.y, m_LightColor.z);
-		m_Shader->SetUniform3f("lightPos", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
-		m_Shader->SetUniform3f("viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
-		
 		m_Shader->SetUniform3f("material.ambient", m_ActualMaterial->ambient.x, m_ActualMaterial->ambient.y, m_ActualMaterial->ambient.z);
 		m_Shader->SetUniform3f("material.diffuse", m_ActualMaterial->diffuse.x, m_ActualMaterial->diffuse.y, m_ActualMaterial->diffuse.z);
 		m_Shader->SetUniform3f("material.specular", m_ActualMaterial->specular.x, m_ActualMaterial->specular.y, m_ActualMaterial->specular.z);
-		m_Shader->SetUniform1f("material.shininess", m_ActualMaterial->shininess);
+		m_Shader->SetUniform1f("material.shininess", m_ActualMaterial->shininess * 128);
 
 		m_Shader->SetUniform3f("light.ambient", 0.2f, 0.2f, 0.2f);
 		m_Shader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
 		m_Shader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
+		m_Shader->SetUniform3f("light.position", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
+
+		m_Shader->SetUniform3f("viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
 		//Layout
 		VertexBufferLayout cubeLayout;
@@ -78,19 +76,18 @@ namespace test{
 		m_Shader->Bind();
 
 		// Cube uniforms
-		m_Shader->SetUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
-		m_Shader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
-		m_Shader->SetUniform3f("lightPos", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
 		m_Shader->SetUniform3f("viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
 		m_Shader->SetUniform3f("material.ambient", m_ActualMaterial->ambient.x, m_ActualMaterial->ambient.y, m_ActualMaterial->ambient.z);
 		m_Shader->SetUniform3f("material.diffuse", m_ActualMaterial->diffuse.x, m_ActualMaterial->diffuse.y, m_ActualMaterial->diffuse.z);
 		m_Shader->SetUniform3f("material.specular", m_ActualMaterial->specular.x, m_ActualMaterial->specular.y, m_ActualMaterial->specular.z);
-		m_Shader->SetUniform1f("material.shininess", m_ActualMaterial->shininess);
+		m_Shader->SetUniform1f("material.shininess", m_ActualMaterial->shininess * 128);
 
 		m_Shader->SetUniform3f("light.ambient", 0.2f, 0.2f, 0.2f);
 		m_Shader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
 		m_Shader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
+		m_Shader->SetUniform3f("light.position", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
+
 
 		glm::mat4 view = camera.GetViewMatrix();
 		m_Shader->SetUniformMat4f("view", view);
@@ -100,15 +97,11 @@ namespace test{
 		m_Shader->SetUniformMat4f("projection", projection);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::rotate(model, glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 1.0f));
-		if (!m_AutoRotate)
-		{
-			model = glm::rotate(model, glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		}
-		else
-		{
+
+		if (m_AutoRotate)
 			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		}
+		
+		
 		m_Shader->SetUniformMat4f("model", model);
 
 		// ------------------------------------
@@ -123,7 +116,7 @@ namespace test{
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, m_LightPosition);
 		model = glm::scale(model, glm::vec3(0.2f));
-		model = glm::rotate(model, glm::radians(20.0f), glm::vec3(0.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, glm::radians(20.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		if (!m_AutoRotate)
 		{
 			model = glm::rotate(model, glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
@@ -151,12 +144,21 @@ namespace test{
 
 	void TestMaterials::OnImGuiRender()
 	{
+
 		if (m_AutoRotate)
 			ImGui::SliderFloat("Rotation Velocity", &m_RotationVelocity, 0.02f, 3.0f);
 		ImGui::SliderFloat("FOV", &camera.Zoom, 0.01f, 90.0f);
 		ImGui::SliderFloat3("Light Cube Pos", &m_LightPosition.x, -3.0f, 3.0f);
 		ImGui::ColorEdit4("Background Color", m_clearColor);
 		ImGui::Checkbox("Auto Rotate", &m_AutoRotate);
+	
+		ImGui::Text("Materials:");
+
+		for (auto& m : m_Materials)
+		{
+			if (ImGui::Button(m.first.c_str()))
+				m_ActualMaterial = &m.second;
+		}
 	}
 
 	inline void TestMaterials::input(float deltaTime)
@@ -216,16 +218,86 @@ namespace test{
 	}
 	inline void TestMaterials::RegisterMaterial()
 	{
-		//Default 0
-		m_Materials.push_back({ glm::vec3(1.0f, 0.5f, 0.31f),
-								glm::vec3(1.0f, 0.5f, 0.31f),
-								glm::vec3(0.5f, 0.5f, 0.5f),
-								32.0f });
+		Material m;
+		// Default 
+		m = { glm::vec3(1.0f, 0.5f, 0.31f), // ambient
+			  glm::vec3(1.0f, 0.5f, 0.31f), // diffuse
+			  glm::vec3(0.5f, 0.5f, 0.5f),  // specular
+			  32.0f };					    // shininess
 
-		//Emerald 1
-		m_Materials.push_back({ glm::vec3(0.0215f, 0.1745f, 0.0215f),
-								glm::vec3(0.07568f, 0.61424f, 0.07568f),
-								glm::vec3(0.633f, 0.727811f, 0.633f),
-								6.0f });
+		AddMaterial("Default", m);
+
+		// Esmerald 
+		m = { glm::vec3(0.0215f, 0.1745f, 0.0215f),   // ambient
+			  glm::vec3(0.07568f, 0.61424f, 0.07568f),// diffuse
+			  glm::vec3(0.633f, 0.727811f, 0.633f),   // specular
+			  0.6f };								  // shininess
+
+		AddMaterial("Esmerald", m);
+
+		// Obsidian 
+		m = { glm::vec3(0.05375f, 0.05f, 0.06625f),		     // ambient
+			  glm::vec3(0.18275f, 0.17f, 0.22525f),			 // diffuse
+			  glm::vec3(0.332741f, 0.328634f, 0.346435f),    // specular
+			  0.3f };										 // shininess
+
+		AddMaterial("Obsidian", m);
+
+		// Pearl 
+		m = { glm::vec3(0.25f, 0.20725f, 0.20725f),		     // ambient
+			  glm::vec3(1.0f, 0.829f, 0.829f),				 // diffuse
+			  glm::vec3(0.296648f, 0.296648f, 0.296648f),    // specular
+			  0.088f };										 // shininess
+
+		AddMaterial("Pearl", m);
+
+		// Gold 
+		m = { glm::vec3(0.24725f,0.1995f,0.0745f),		     // ambient
+			  glm::vec3(0.75164f,0.60648f,0.22648f),		 // diffuse
+			  glm::vec3(0.628281f,0.555802f,0.366065f),		 // specular
+			  0.4f };										 // shininess
+
+		AddMaterial("Gold", m);
+
+		// Yellow Plastic 
+		m = { glm::vec3(0.0f,0.0f,0.0f),		 // ambient
+			  glm::vec3(0.5f,0.5f,0.0f),		 // diffuse
+			  glm::vec3(0.60f,0.60f,0.50f),		 // specular
+			  0.25f };							 // shininess
+
+		AddMaterial("Yellow Plastic", m);
+
+		// Cyan Plastic 
+		m = { glm::vec3(0.0f,0.1f,0.06f),						// ambient
+			  glm::vec3(0.0f,0.50980392f,0.50980392f),			// diffuse
+			  glm::vec3(0.50196078f,0.50196078f,0.50196078f),	// specular
+			  0.25f };											// shininess
+
+		AddMaterial("Cyan Plastic", m);
+
+		// Yellow Rubber 
+		m = { glm::vec3(0.05f,0.05f,0.0f),	// ambient
+			  glm::vec3(0.5f,0.5f,0.4f),	// diffuse
+			  glm::vec3(0.7f,0.7f,0.04f),	// specular
+			  0.078125f };					// shininess
+
+		AddMaterial("Yellow Rubber", m);
+	}
+
+	inline void TestMaterials::AddMaterial(const std::string& nameMaterial, Material material)
+	{
+		m_Materials.push_back(std::make_pair(nameMaterial, material));
+	}
+
+	inline Material* TestMaterials::LocateMaterial(const std::string& nameMaterial)
+	{
+		for (auto& m : m_Materials)
+		{
+			if (m.first == nameMaterial)
+			{
+				return &m.second;
+			}
+		}
+		return LocateMaterial("Default");
 	}
 }

@@ -53,11 +53,13 @@ namespace test {
 		std::unique_ptr<VertexBuffer> m_LightVertexBuffer;
 
 		Material* m_ActualMaterial;
-		std::vector<Material> m_Materials;
+		std::vector<std::pair<std::string, Material>> m_Materials;
 
 	private:
 		inline void input(float deltaTime);
 		inline void RegisterMaterial();
+		inline void AddMaterial(const std::string& nameMaterial,Material material);
+		inline Material* LocateMaterial(const std::string& nameMaterial);
 	};
 
 }
