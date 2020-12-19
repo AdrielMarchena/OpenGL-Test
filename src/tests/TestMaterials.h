@@ -60,6 +60,7 @@ namespace test {
 		inline void RegisterMaterial();
 		inline void AddMaterial(const std::string& nameMaterial,Material material);
 		inline Material* LocateMaterial(const std::string& nameMaterial);
+		inline void ChangeMaterial(Material* material);
 	};
 
 }

@@ -72,22 +72,28 @@ namespace test{
 
 	void TestMaterials::OnUpdate(float deltaTime)
 	{
+		static Material* ma = m_ActualMaterial;
+
 		input(deltaTime);
 		m_Shader->Bind();
 
 		// Cube uniforms
 		m_Shader->SetUniform3f("viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
-		m_Shader->SetUniform3f("material.ambient", m_ActualMaterial->ambient.x, m_ActualMaterial->ambient.y, m_ActualMaterial->ambient.z);
-		m_Shader->SetUniform3f("material.diffuse", m_ActualMaterial->diffuse.x, m_ActualMaterial->diffuse.y, m_ActualMaterial->diffuse.z);
-		m_Shader->SetUniform3f("material.specular", m_ActualMaterial->specular.x, m_ActualMaterial->specular.y, m_ActualMaterial->specular.z);
-		m_Shader->SetUniform1f("material.shininess", m_ActualMaterial->shininess * 128);
+		if (ma != m_ActualMaterial)
+		{
 
-		m_Shader->SetUniform3f("light.ambient", 0.2f, 0.2f, 0.2f);
-		m_Shader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
-		m_Shader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
+			m_Shader->SetUniform3f("material.ambient", m_ActualMaterial->ambient.x, m_ActualMaterial->ambient.y, m_ActualMaterial->ambient.z);
+			m_Shader->SetUniform3f("material.diffuse", m_ActualMaterial->diffuse.x, m_ActualMaterial->diffuse.y, m_ActualMaterial->diffuse.z);
+			m_Shader->SetUniform3f("material.specular", m_ActualMaterial->specular.x, m_ActualMaterial->specular.y, m_ActualMaterial->specular.z);
+			m_Shader->SetUniform1f("material.shininess", m_ActualMaterial->shininess * 128);
+
+		}
+
+		//m_Shader->SetUniform3f("light.ambient", 0.2f, 0.2f, 0.2f);
+		//m_Shader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f); // darken diffuse light a bit
+		//m_Shader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
 		m_Shader->SetUniform3f("light.position", m_LightPosition.x, m_LightPosition.y, m_LightPosition.z);
-
 
 		glm::mat4 view = camera.GetViewMatrix();
 		m_Shader->SetUniformMat4f("view", view);
@@ -100,7 +106,6 @@ namespace test{
 
 		if (m_AutoRotate)
 			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
-		
 		
 		m_Shader->SetUniformMat4f("model", model);
 
@@ -126,6 +131,8 @@ namespace test{
 			model = glm::rotate(model, ((float)glfwGetTime() * m_RotationVelocity) * glm::radians(50.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 		}
 		m_LightShader->SetUniformMat4f("model", model);
+
+		ma = m_ActualMaterial;
 	}
 
 	void TestMaterials::OnRender()
@@ -157,7 +164,9 @@ namespace test{
 		for (auto& m : m_Materials)
 		{
 			if (ImGui::Button(m.first.c_str()))
-				m_ActualMaterial = &m.second;
+			{
+				m_ActualMaterial = &m.second;	
+			}
 		}
 	}
 
@@ -216,6 +225,7 @@ namespace test{
 		oldMX = Mouse::mouse_pos_x;
 		oldMY = Mouse::mouse_pos_y;
 	}
+	
 	inline void TestMaterials::RegisterMaterial()
 	{
 		Material m;
@@ -223,7 +233,7 @@ namespace test{
 		m = { glm::vec3(1.0f, 0.5f, 0.31f), // ambient
 			  glm::vec3(1.0f, 0.5f, 0.31f), // diffuse
 			  glm::vec3(0.5f, 0.5f, 0.5f),  // specular
-			  32.0f };					    // shininess
+			  32.0f / 128 };			    // shininess
 
 		AddMaterial("Default", m);
 
